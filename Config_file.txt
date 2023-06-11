@@ -1,3 +1,5 @@
+This is config file
+
 simu_153 = rellab_dict({
         "ken": "10077860",
         "imei": "864172041003551",
