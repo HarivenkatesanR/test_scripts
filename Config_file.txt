@@ -1,22 +1,4 @@
-simu_153 = rellab_dict({
-        "ken": "10077860",
-        "imei": "864172041003551",
-        "ip": "10.114.144.177:3210",
-        "device_type": "dtu",
-        "cpu": {
-            "model": "GG",
-            "software": "9.0.1",
-            "min_floor": 1,
-            "max_floor": 2,
-            "disabled_floors": []
-        },
-        "subdevices": [],
-        "serial": {
-            "tty": "/dev/ttyUSB0",
-            "baudrate": 115200
-        },
-        "switching_pin": "DTU_3G"
-    })
+
     simu_153_4g = rellab_dict({
         "ken": "50815387",
         "imei": "867698041913693",
