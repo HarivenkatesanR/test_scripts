@@ -1,0 +1,86 @@
+
+
+import jenkins
+import re
+import openpyxl
+import datetime
+
+server = jenkins.Jenkins(url='https://rellabiotjenkins.rd.konenet.com/job/IoT/', username='harivenkatesan.r@kone.com',password='Qwerty7uiop[]')
+def get_all_jenkins_job():
+    file = openpyxl.load_workbook(filename='C:/Users/hr0203/OneDrive - KONE Corporation/Documents/IoT_Jen_jobs.xlsx')
+    sheet = file.active
+    count = 0
+    total_jobs = server.get_all_jobs(folder_depth=5)
+    for d_name in total_jobs:
+        count+=1
+        job_name = d_name['name']
+        job_info = server.get_job_info(name=job_name) # Gets mentioned job details in dict form
+        own_info = job_info['description']  # description key contains the owner tag and info about the job, if the user added to the job. Otherwise it'll return None
+
+        if own_info != None and 'owner' in own_info:
+            verify = re.search(r'[a-z]*\.[a-z]*', own_info)
+            owner = verify.group() if verify else own_info
+        else:
+            owner = 'None'
+
+        # last_build_date = get_last_build_details(job_info)
+        print(f'{count}. {job_name} - {owner}')
+        sheet[f'A{count+2}'] = count
+        sheet[f'B{count+2}'] = job_name
+        sheet[f'C{count+2}'] = owner
+        # sheet[f'D{count+2}'] = last_build_date
+    file.save(filename="C:/Users/hr0203/OneDrive - KONE Corporation/Documents/IoT_Jen_jobs.xlsx")
+    file.close()
+
+def get_last_build_details(job_info):
+    job_name = job_info['name']
+    last_build_num = job_info['lastCompletedBuild']
+    if last_build_num:
+        build_num = last_build_num['number']
+        last_build_timestamp = server.get_build_info(job_name,build_num)['timestamp']
+        dt_object = datetime.datetime.fromtimestamp(last_build_timestamp//1000)
+        formatted_date = dt_object.strftime('%b-%d, %Y')
+    else:
+        formatted_date=last_build_num
+    return formatted_date
+
+
+
+def test():
+    val = server.get_job_info('2_0_Simu95_kcegch_core_operations_uat_env')
+    # own_info = val['description']
+
+    # data = val['description']
+    print(val)
+    data = val['lastCompletedBuild']
+    data_num = data['number']
+    print(data_num)
+
+    if data:
+        build = server.get_build_info('2_0_Simu95_kcegch_core_operations_uat_env', data_num)
+        build = build['timestamp']
+    else:
+        build= data
+
+    # data= 'DTU Connectivity API Tests\n<br>\nowner=ganesha ts'
+    # print(own_info)
+
+    print(build)
+
+    # owner_val = re.search(r'[a-z]*\.[a-z]*',data)
+    # owner = owner_val.group() if owner_val else data
+
+
+# get_all_jenkins/_job()
+# test()
+
+def date():
+    epoch = abs(1668178613374//1000)
+    current = 1683889163
+
+    dt_object = datetime.datetime.fromtimestamp(epoch)
+    formatted_date = dt_object.strftime('%b-%d,%Y')
+    print(formatted_date)
+    print(epoch)
+
+get_all_jenkins_job()
